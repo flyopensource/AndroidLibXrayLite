@@ -28,17 +28,15 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.20'
-        run: go version
 
       - name: Set Gomobile
         run: |
+          go version
           go install golang.org/x/mobile/cmd/gomobile@latest
-          gomobile init  
 
       - name: Build
-        env:
-          BUILD_MOUDLE: app
         run: |
+          gomobile init  
           go mod tidy -v
           gomobile bind -v -androidapi 19 -ldflags='-s -w' ./
 
