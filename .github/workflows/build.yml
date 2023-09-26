@@ -40,8 +40,7 @@ jobs:
           go mod tidy -v
           gomobile bind -v -androidapi 19 -ldflags='-s -w' ./
 
-      - name: upload apk
-        id: apk
+      - name: upload
         env:
           UPLOAD_URL: ${{ secrets.UPLOAD_URL }}
         run: |
@@ -52,13 +51,13 @@ jobs:
               URL=${url}
           fi
           BUILD_DATE=`TZ=UTC-8 date '+%Y%m%d_%H%M'`
-          
           APK_SOURCE=`find ./ -name "*.aar"`
-          APK_NAME=${BUILD_DATE}_xray_.apk
+          APK_NAME=${BUILD_DATE}_xray_.aar
           APK_PATH=`dirname $APK_SOURCE`/$APK_NAME
           mv $APK_SOURCE $APK_PATH
           echo $APK_PATH
           echo $APK_NAME
+          
           echo curl -F scene=default -F output=json2 -F filename=${APK_NAME} -F path=ci  -F file=@./${APK_PATH} ${URL}/group1/upload --insecure
           curl -F scene=default -F output=json2 -F filename=${APK_NAME} -F path=ci  -F file=@./${APK_PATH} ${URL}/group1/upload --insecure
           echo ${URL}/group1/ci/${APK_NAME}
